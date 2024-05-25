@@ -1,24 +1,57 @@
 class Article:
+
+    all = []
+
     def __init__(self, author, magazine, title):
         self.author = author
         self.magazine = magazine
-        self.title = title
-        
+        self._title = title
+        author.add_article(self)
+        self.all.append(self)
+
+    @property
+    def title(self):
+        return self._title
+
+    @title.setter
+    def title(self, title):
+        raise AttributeError("Cannot set attribute 'title'")
+
 class Author:
     def __init__(self, name):
-        self.name = name
+        if not isinstance(name, str):
+            raise ValueError("Name must be a string")
+        if len(name) == 0:
+            raise ValueError("Name must have more than 0 characters")
+        self._name = name
+        self._articles = []
+        
+    
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self,value):
+        raise ValueError("Cannot change authors name")
 
     def articles(self):
-        pass
+        return self._articles
+ 
 
     def magazines(self):
-        pass
+        return self._magazines
 
-    def add_article(self, magazine, title):
-        pass
+    
+    def add_article(self, article):
+        if not isinstance(article, Article):
+            raise ValueError("Article must be an instance of Article")
+        self._articles.append(article) 
+        return article
+
 
     def topic_areas(self):
-        pass
+        return {magazine.category for magazine in self._magazines}
 
 class Magazine:
     def __init__(self, name, category):
@@ -36,3 +69,8 @@ class Magazine:
 
     def contributing_authors(self):
         pass
+
+
+author = Author("Carry Bradshaw")
+magazine = Magazine("Vogue", "Fashion")
+article_1 = Article(author, magazine, "How to wear a tutu with style")
